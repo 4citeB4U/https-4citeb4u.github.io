@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+// This component creates the floating yarn and needle background effect
+const FloatingBackground = ({ particleCount = 40 }) => {
 interface Particle {
   id: number;
   x: number;
@@ -13,68 +15,54 @@ interface Particle {
   opacity: number;
 }
 
-const FloatingBackground: React.FC = () => {
-  const [particles, setParticles] = useState<Particle[]>([]);
+const [particles, setParticles] = useState<Particle[]>([]);
   
   useEffect(() => {
-    const initialParticles: Particle[] = Array.from({ length: 40 }, (_, i) => ({
+    // Create initial particles with random positions and properties
+    const initialParticles = Array.from({ length: particleCount }, (_, i) => ({
       id: i,
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      speedX: (Math.random() - 0.5) * 0.3, // Further reduced initial speed
-      speedY: (Math.random() - 0.5) * 0.3,
+      speedX: (Math.random() - 0.5) * 2,
+      speedY: (Math.random() - 0.5) * 2,
       rotation: Math.random() * 360,
-      rotationSpeed: (Math.random() - 0.5) * 0.5, // Smoother rotation
+      rotationSpeed: (Math.random() - 0.5) * 3,
       type: Math.random() > 0.5 ? '🪡' : '🧶',
-      size: 25 + Math.random() * 25,
-      opacity: 0.6 + Math.random() * 0.4
+      size: 25 + Math.random() * 25, // Size range: 25-50px
+      opacity: 0.6 + Math.random() * 0.4 // Opacity range: 0.6-1
     }));
     
     setParticles(initialParticles);
     
+    // Animation function to update particle positions
     const animate = () => {
       setParticles(prev => prev.map(particle => {
-        // Smooth sinusoidal movement
-        const time = Date.now() * 0.001;
-        const sinOffset = Math.sin(time + particle.id * 0.5) * 0.02;
-        const cosOffset = Math.cos(time + particle.id * 0.5) * 0.02;
-        
-        let newSpeedX = particle.speedX + sinOffset;
-        let newSpeedY = particle.speedY + cosOffset;
-        
-        // Gradual speed adjustment
-        const targetSpeed = 0.5;
-        const speedAdjustment = 0.01;
-        const currentSpeed = Math.sqrt(newSpeedX * newSpeedX + newSpeedY * newSpeedY);
-        
-        if (currentSpeed > 0) {
-          const speedFactor = 1 + (targetSpeed - currentSpeed) * speedAdjustment;
-          newSpeedX *= speedFactor;
-          newSpeedY *= speedFactor;
-        }
-        
-        let newX = particle.x + newSpeedX;
-        let newY = particle.y + newSpeedY;
+        // Calculate new positions with boundary checking
+        let newX = particle.x + particle.speedX;
+        let newY = particle.y + particle.speedY;
         let newRotation = particle.rotation + particle.rotationSpeed;
         
-        // Smooth boundary wrapping
-        if (newX < -40) newX = window.innerWidth;
-        if (newX > window.innerWidth) newX = -40;
-        if (newY < -40) newY = window.innerHeight;
-        if (newY > window.innerHeight) newY = -40;
+        // Bounce off edges
+        if (newX < 0 || newX > window.innerWidth - 40) {
+          particle.speedX *= -1;
+          newX = particle.x;
+        }
+        if (newY < 0 || newY > window.innerHeight - 40) {
+          particle.speedY *= -1;
+          newY = particle.y;
+        }
         
         return {
           ...particle,
           x: newX,
           y: newY,
-          speedX: newSpeedX,
-          speedY: newSpeedY,
           rotation: newRotation
         };
       }));
     };
     
-    const intervalId = setInterval(animate, 50); // Slightly slower updates for smoother animation
+    // Start animation loop
+    const intervalId = setInterval(animate, 50);
     
     // Handle window resize
     const handleResize = () => {
@@ -87,25 +75,30 @@ const FloatingBackground: React.FC = () => {
     
     window.addEventListener('resize', handleResize);
     
+    // Clean up interval and event listener
     return () => {
       clearInterval(intervalId);
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [particleCount]);
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-black pointer-events-none">
+    <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
+      <div className="absolute inset-0 bg-black" />
       {particles.map(particle => (
         <div
           key={particle.id}
           className="absolute select-none"
           style={{
-            left: `${particle.x}px`,
-            top: `${particle.y}px`,
+            left: particle.x,
+            top: particle.y,
             transform: `rotate(${particle.rotation}deg)`,
             fontSize: `${particle.size}px`,
             opacity: particle.opacity,
-            transition: 'transform 0.05s ease-out'
+            transition: 'transform 0.05s linear',
+            filter: 'brightness(1.2)',
+            textShadow: '0 0 10px rgba(255,255,255,0.3)',
+            zIndex: 1
           }}
         >
           {particle.type}
