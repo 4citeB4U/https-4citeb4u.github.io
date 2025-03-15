@@ -1,6 +1,6 @@
 // src/books/NeedleAndYarn.ts
 
-import { Book } from './types';
+import { Book } from '../components/types';
 
 export const needleAndYarn: Book = {
   id: 'needle-and-yarn',

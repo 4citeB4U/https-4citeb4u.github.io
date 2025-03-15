@@ -1,6 +1,6 @@
 // src/books/CrochetMastery.ts
 
-import { Book } from './types';
+import { Book } from '../components/types';
 
 export const crochetMastery: Book = {
   id: 'crochet-mastery',
