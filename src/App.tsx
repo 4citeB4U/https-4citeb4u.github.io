@@ -284,7 +284,7 @@ const App: React.FC = () => {
           </div>
         </nav>
 
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-8 overflow-y-auto">
           {isAnimating ? (
             <PageFlipAnimation
               isAnimating={isAnimating}
