@@ -1,6 +1,6 @@
 import React from 'react';
 
-// This component creates the fixed top banner with the title and scrolling text effect
+import { Gift } from 'lucide-react';
 const TopBanner = ({ title = "Leola's Digital Library", subtitle = "A collection of heartwarming stories and guides by Leola \"Sista\" Lee" }) => {
   return (
     <>
@@ -12,7 +12,24 @@ const TopBanner = ({ title = "Leola's Digital Library", subtitle = "A collection
         <p className="text-xl text-gray-300 text-center mt-2">
           {subtitle}
         </p>
+        <div className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-black py-2 px-4 rounded-lg transition-all transform-gpu hover:scale-[1.02] animate-shake">
+          <Gift className="h-5 w-5" />
+          Support the Author
+        </div>
       </div>
+
+      <style>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          50% { transform: translateX(5px); }
+          75% { transform: translateX(-5px); }
+        }
+        
+        .animate-shake {
+          animation: shake 0.5s infinite;
+        }
+      `}</style>
       
       {/* Add these CSS animations to your main CSS or use a style tag */}
       <style>{`
