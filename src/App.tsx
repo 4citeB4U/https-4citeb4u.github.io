@@ -9,6 +9,8 @@ import InspiringMessages from './components/InspiringMessages';
 import { Book as BookType, BookPage } from './components/types'; // Import Book and BookPage types
 import { needleAndYarn } from './Books/NeedleAndYarn'; // Import book data
 import { crochetMastery } from './Books/CrochetMastery'; // Import book data
+import Banner from './components/Banner';
+import GiftBox from './components/GiftBox';
 
 // Book collection data
 const books: BookType[] = [needleAndYarn, crochetMastery]; // Use imported book data
@@ -177,13 +179,9 @@ const getNextPageContent = (): { title: string, content: string } => {
   const LibraryView = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-white">
-            Leola Lee's Library
-          </h1>
-          <p className="text-xl text-gray-200">
-            A collection of heartwarming stories and guides by Leola "Sister" Lee
-          </p>
+        <Banner />
+        <div className="flex justify-center mb-8">
+          <GiftBox />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full">
           {books.map(book => (
