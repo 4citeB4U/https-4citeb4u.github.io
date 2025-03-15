@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Gift } from 'lucide-react';
 const TopBanner = ({ title = "Leola's Digital Library", subtitle = "A collection of heartwarming stories and guides by Leola \"Sista\" Lee" }) => {
   return (
