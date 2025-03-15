@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 
 interface PageContent {
   title: string;
@@ -22,6 +22,18 @@ const PageFlipAnimation: React.FC<PageFlipAnimationProps> = ({
   nextContent,
   fontSize
 }) => {
+  // Set up an effect to handle animation end in case onAnimationEnd doesn't fire
+  // This acts as a safety mechanism
+  useEffect(() => {
+    if (isAnimating) {
+      const timer = setTimeout(() => {
+        onAnimationComplete();
+      }, 1000); // Increased timeout for better reliability
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isAnimating, onAnimationComplete]);
+
   return (
     <div className="relative w-full h-full overflow-hidden page-turn-animation">
       {/* Current page */}

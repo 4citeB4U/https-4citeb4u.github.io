@@ -1,21 +1,74 @@
+// App.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, ChevronLeft, ChevronRight, Gift, Settings, X, Book, List } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './components/ui/card/Card';
 import BookCover from './components/BookCover';
-import LeolaBackground from './components/LeolasBackground';
+import LeolasBackground from './components/LeolasBackground'; 
 import PaymentOverlay from './components/PaymentOverlay';
 import PageFlipAnimation from './components/PageFlipAnimation';
 import InspiringMessages from './components/InspiringMessages';
-import { Book as BookType, BookPage } from './components/types'; // Import Book and BookPage types
-import { needleAndYarn } from './Books/NeedleAndYarn'; // Import book data
-import { crochetMastery } from './Books/CrochetMastery'; // Import book data
 
-// Book collection data
-const books: BookType[] = [needleAndYarn, crochetMastery]; // Use imported book data
+// Define TypeScript interfaces
+interface BookPage {
+  title: string;
+  content: string;
+}
+
+interface BookType {
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+  pages: BookPage[];
+}
+
+// Book collection data (customize to your liking)
+const books: BookType[] = [
+  {
+    id: 'needle-and-yarn',
+    title: "Needle & Yarn: A Love Stitched in Time",
+    author: "Leola (Sister) Lee",
+    description: "A heartwarming tale of love between crafting tools...",
+    pages: [
+      {
+        title: "Dedication",
+        content: "To all who have ever felt the magic in a simple stitch...\n\n..."
+      },
+      {
+        title: "Chapter 1: A Tangled Beginning",
+        content: "In the cozy confines of Leola's sewing basket..."
+      },
+      {
+        title: "Chapter 2: Weaving Trust",
+        content: "As days turned into weeks, Sterling and Azure..."
+      }
+    ]
+  },
+  {
+    id: 'crochet-mastery',
+    title: "Crochet Mastery: A Complete Guide",
+    author: "Leola (Sister) Lee",
+    description: "A comprehensive guide to mastering the art of crochet...",
+    pages: [
+      {
+        title: "Introduction",
+        content: "Welcome to the wonderful world of crochet!\n\n..."
+      },
+      {
+        title: "Chapter 1: Getting Started",
+        content: "Your journey begins with selecting the right tools...\n\n..."
+      },
+      {
+        title: "Chapter 2: Basic Stitches",
+        content: "The Chain Stitch (ch):\n...\n\n..."
+      }
+    ]
+  }
+];
 
 const App: React.FC = () => {
   // State management
-const [view, setView] = useState<'library' | 'reader'>('library');
+  const [view, setView] = useState<'library' | 'reader'>('library');
   const [selectedBook, setSelectedBook] = useState<BookType | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [showPayment, setShowPayment] = useState(false);
@@ -32,28 +85,25 @@ const [view, setView] = useState<'library' | 'reader'>('library');
   const [animationDirection, setAnimationDirection] = useState<'next' | 'prev'>('next');
   const [nextPageNum, setNextPageNum] = useState(0);
 
-  const speechSynthesis = useRef<SpeechSynthesis | null>(null);
+  const speechSynthesisRef = useRef<SpeechSynthesis | null>(null);
   const currentUtterance = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Initialize speech synthesis
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
-      speechSynthesis.current = window.speechSynthesis;
-      
-      // Check if speechSynthesis is actually available and functioning
+      speechSynthesisRef.current = window.speechSynthesis;
       try {
-        // Test the speechSynthesis with a simple utterance
+        // Test with a simple utterance
         new SpeechSynthesisUtterance('');
-        speechSynthesis.current.cancel(); // Clear any previous speech
+        speechSynthesisRef.current.cancel(); 
         setSpeechError(null);
       } catch (error) {
         console.error('Speech synthesis initialization error:', error);
         setSpeechError('Speech synthesis is not available in your browser.');
       }
-      
       return () => {
-        if (currentUtterance.current && speechSynthesis.current) {
-          speechSynthesis.current.cancel();
+        if (currentUtterance.current && speechSynthesisRef.current) {
+          speechSynthesisRef.current.cancel();
         }
       };
     } else {
@@ -62,16 +112,12 @@ const [view, setView] = useState<'library' | 'reader'>('library');
   }, []);
 
   // Speech synthesis functions
-  const speak = (text: string): void => {
-    // If there was a previous error, don't try to speak
-    if (speechError) {
-      return;
-    }
+  const speak = (text: string) => {
+    if (speechError) return;
     
-    if (speechSynthesis.current) {
+    if (speechSynthesisRef.current) {
       try {
         stopSpeaking();
-
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = speechRate;
         utterance.onstart = () => setIsSpeaking(true);
@@ -81,9 +127,8 @@ const [view, setView] = useState<'library' | 'reader'>('library');
           setIsSpeaking(false);
           setSpeechError('An error occurred while speaking the text. Please try again.');
         };
-
         currentUtterance.current = utterance;
-        speechSynthesis.current.speak(utterance);
+        speechSynthesisRef.current.speak(utterance);
       } catch (error) {
         console.error('Speech synthesis error:', error);
         setSpeechError('Failed to start text-to-speech. Please try again.');
@@ -91,10 +136,10 @@ const [view, setView] = useState<'library' | 'reader'>('library');
     }
   };
 
-  const stopSpeaking = (): void => {
-    if (speechSynthesis.current) {
+  const stopSpeaking = () => {
+    if (speechSynthesisRef.current) {
       try {
-        speechSynthesis.current.cancel();
+        speechSynthesisRef.current.cancel();
         if (currentUtterance.current) {
           currentUtterance.current = null;
         }
@@ -106,7 +151,7 @@ const [view, setView] = useState<'library' | 'reader'>('library');
   };
 
   // Open book
-  const openBook = (bookId: string): void => {
+  const openBook = (bookId: string) => {
     const book = books.find(b => b.id === bookId);
     if (book) {
       setSelectedBook(book);
@@ -115,8 +160,8 @@ const [view, setView] = useState<'library' | 'reader'>('library');
     }
   };
 
-  // Close reader and return to library
-  const returnToLibrary = (): void => {
+  // Return to library
+  const returnToLibrary = () => {
     stopSpeaking();
     setView('library');
     setSelectedBook(null);
@@ -124,20 +169,15 @@ const [view, setView] = useState<'library' | 'reader'>('library');
   };
 
   // Read current page
-  const readCurrentPage = (): void => {
-    if (selectedBook && selectedBook.pages[currentPage]) {
-      if (isSpeaking) {
-        stopSpeaking();
-      } else {
-        speak(selectedBook.pages[currentPage].content);
-      }
+  const readCurrentPage = () => {
+    if (selectedBook?.pages[currentPage]) {
+      isSpeaking ? stopSpeaking() : speak(selectedBook.pages[currentPage].content);
     }
   };
 
   // Start page turn animation
-  const startPageTurn = (direction: 'next' | 'prev', targetPage: number): void => {
+  const startPageTurn = (direction: 'next' | 'prev', targetPage: number) => {
     if (isAnimating) return;
-
     stopSpeaking();
     setIsAnimating(true);
     setAnimationDirection(direction);
@@ -145,49 +185,44 @@ const [view, setView] = useState<'library' | 'reader'>('library');
   };
 
   // Change page with animation
-  const changePage = (newPage: number): void => {
+  const changePage = (newPage: number) => {
     if (isAnimating || !selectedBook || newPage === currentPage) return;
-
     if (newPage >= 0 && newPage < selectedBook.pages.length) {
       const direction = newPage > currentPage ? 'next' : 'prev';
       startPageTurn(direction, newPage);
     }
   };
 
-  // Handle animation completion
-  const handleAnimationComplete = (): void => {
+  // Handle animation complete
+  const handleAnimationComplete = () => {
     setCurrentPage(nextPageNum);
     setIsAnimating(false);
   };
 
-  // Get current and next page content for animation
-const getCurrentPageContent = (): { title: string, content: string } => {
-    return selectedBook && selectedBook.pages[currentPage] 
-      ? selectedBook.pages[currentPage] 
-      : { title: '', content: '' };
+  // Current and next page content
+  const getCurrentPageContent = (): BookPage => {
+    return selectedBook?.pages[currentPage] || { title: '', content: '' };
+  };
+  const getNextPageContent = (): BookPage => {
+    return selectedBook?.pages[nextPageNum] || { title: '', content: '' };
   };
 
-const getNextPageContent = (): { title: string, content: string } => {
-    return selectedBook && selectedBook.pages[nextPageNum]
-      ? selectedBook.pages[nextPageNum]
-      : { title: '', content: '' };
-  };
-
-  // Render library view
+  // Library view
   const LibraryView = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-white">
-            Leola Lee's Library
-          </h1>
+          <h1 className="text-4xl font-bold mb-4 text-white">Leola Lee's Library</h1>
           <p className="text-xl text-gray-200">
             A collection of heartwarming stories and guides by Leola "Sister" Lee
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full">
           {books.map(book => (
-            <Card key={book.id} className="bg-white/10 backdrop-blur-sm border-white/20 hover:border-white/40 transition-all transform-gpu hover:scale-[1.02]">
+            <Card
+              key={book.id}
+              className="bg-white/10 backdrop-blur-sm border-white/20 hover:border-white/40 transition-all transform-gpu hover:scale-[1.02]"
+            >
               <CardHeader>
                 <CardTitle className="text-2xl text-white">
                   {book.title}
@@ -214,10 +249,9 @@ const getNextPageContent = (): { title: string, content: string } => {
     );
   };
 
-  // Render reader view
+  // Reader view
   const ReaderView = () => {
     if (!selectedBook) return null;
-
     const totalPages = selectedBook.pages.length;
     const currentPageData = selectedBook.pages[currentPage];
 
@@ -265,8 +299,12 @@ const getNextPageContent = (): { title: string, content: string } => {
                 <h2 className="text-3xl font-bold mb-6 text-blue-100">
                   {currentPageData.title}
                 </h2>
-                {currentPageData.content.split('\n\n').map((paragraph: string, index: number) => (
-                  <p key={index} style={{ fontSize: `${fontSize}px` }} className="text-blue-200 mb-4">
+                {currentPageData.content.split('\n\n').map((paragraph, index) => (
+                  <p
+                    key={index}
+                    style={{ fontSize: `${fontSize}px` }}
+                    className="text-blue-200 mb-4"
+                  >
                     {paragraph}
                   </p>
                 ))}
@@ -287,7 +325,7 @@ const getNextPageContent = (): { title: string, content: string } => {
 
           <div className="flex items-center gap-4">
             <button
-              onClick={() => isSpeaking ? stopSpeaking() : readCurrentPage()}
+              onClick={() => (isSpeaking ? stopSpeaking() : readCurrentPage())}
               className="text-blue-100 hover:text-blue-200 transition-colors"
             >
               <Volume2 className="h-5 w-5" />
@@ -316,7 +354,7 @@ const getNextPageContent = (): { title: string, content: string } => {
     );
   };
 
-  // Render settings modal
+  // Settings modal
   const SettingsModal = () => {
     if (!showSettings) return null;
 
@@ -376,7 +414,7 @@ const getNextPageContent = (): { title: string, content: string } => {
     );
   };
 
-  // Render table of contents modal
+  // Table of contents modal
   const TableOfContentsModal = () => {
     if (!showTableOfContents || !selectedBook) return null;
 
@@ -393,7 +431,7 @@ const getNextPageContent = (): { title: string, content: string } => {
             </button>
           </div>
           <div className="space-y-2">
-            {selectedBook.pages.map((page: BookPage, index: number) => (
+            {selectedBook.pages.map((page, index) => (
               <button
                 key={index}
                 onClick={() => {
@@ -414,7 +452,9 @@ const getNextPageContent = (): { title: string, content: string } => {
   // Main render
   return (
     <div className="relative min-h-screen">
-      <LeolaBackground particleCount={particleCount} />
+      {/* Optional props => <LeolasBackground particleCount={particleCount} /> 
+         or omit them => <LeolasBackground /> defaults to 50 */}
+      <LeolasBackground particleCount={particleCount} />
       {view === 'library' ? <LibraryView /> : <ReaderView />}
       <PaymentOverlay
         isOpen={showPayment}

@@ -1,39 +1,75 @@
 # Leola's Digital Library
 
-An interactive digital library featuring the works of Leola "Sista" Lee. This web application provides an engaging reading experience with features like text-to-speech, page animations, and accessibility options.
+A beautiful digital library application for Leola "Sista" Lee's literary works and guides. This React application showcases an interactive reading experience with animations, audio features, and payment integration.
 
 ## Features
 
-- Interactive book library
-- Page flip animations
-- Text-to-speech functionality
-- Customizable reading settings
-- Responsive design
-- Support for authors
+- **Digital Book Collection:** Browse and read Leola's collection of stories and guides
+- **Interactive Reading Experience:** Page flip animations, customizable font size, and more
+- **Text-to-Speech:** Listen to stories with adjustable speech rate
+- **Dynamic Background:** Interactive particle background with adjustable settings
+- **Payment Integration:** Multiple options to support the author, including Stripe payments
+- **Responsive Design:** Works on both desktop and mobile devices
 
-## Tech Stack
+## Technical Overview
 
-- React + TypeScript
-- Tailwind CSS
-- Vite
-- Lucide React (icons)
+This application is built with:
 
-## Development
+- React with TypeScript
+- Tailwind CSS for styling
+- Lucide React for icons
+- Stripe for payment processing
 
-To run the project locally:
+## Setup and Installation
 
-```bash
-# Install dependencies
-npm install
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Create a `.env` file with your Stripe publishable key:
+   ```
+   VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+   ```
+4. Start the development server:
+   ```
+   npm run dev
+   ```
 
-# Start development server
-npm run dev
-```
+## Project Structure
 
-## Contributing
+- `/components` - React components
+  - `LeolasDigitalLibrary.tsx` - Main application component
+  - `BookCover.tsx` - Book cover display
+  - `LeolasBackground.tsx` - Animated background
+  - `PageFlipAnimation.tsx` - Page turning animations
+  - `PaymentOverlay.tsx` - Payment modal
+  - `CheckoutForm.tsx` - Stripe payment form
+  - `ui/card` - Card UI components
+- `/styles.css` - Global styles and animations
+- `/lib/utils.ts` - Utility functions
 
-We welcome contributions! Please feel free to submit a Pull Request.
+## Configuration
+
+You can customize the application by modifying:
+
+- `tailwind.config.js` - Tailwind CSS configuration
+- Book data in `LeolasDigitalLibrary.tsx` - Add or modify books
+
+## Payment Processing
+
+The payment system is integrated with Stripe. To process real payments:
+
+1. Create a Stripe account
+2. Replace the test publishable key in the application
+3. Set up your Stripe webhook endpoint
+4. Configure your product and pricing in the Stripe dashboard
 
 ## License
 
-MIT © Leola's Digital Library
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Credits
+
+- Developed for Leola "Sista" Lee
+- UI/UX design inspired by modern digital reading experiences

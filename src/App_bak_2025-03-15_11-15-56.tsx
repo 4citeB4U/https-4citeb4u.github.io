@@ -2,20 +2,72 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, ChevronLeft, ChevronRight, Gift, Settings, X, Book, List } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './components/ui/card/Card';
 import BookCover from './components/BookCover';
-import LeolaBackground from './components/LeolasBackground';
+import LeolaBackground from './components/LeolaBackground';
 import PaymentOverlay from './components/PaymentOverlay';
 import PageFlipAnimation from './components/PageFlipAnimation';
 import InspiringMessages from './components/InspiringMessages';
-import { Book as BookType, BookPage } from './components/types'; // Import Book and BookPage types
-import { needleAndYarn } from './Books/NeedleAndYarn'; // Import book data
-import { crochetMastery } from './Books/CrochetMastery'; // Import book data
+
+// Define TypeScript interfaces
+interface BookPage {
+  title: string;
+  content: string;
+}
+
+interface BookType {
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+  pages: BookPage[];
+}
 
 // Book collection data
-const books: BookType[] = [needleAndYarn, crochetMastery]; // Use imported book data
+const books: BookType[] = [
+  {
+    id: 'needle-and-yarn',
+    title: "Needle & Yarn: A Love Stitched in Time",
+    author: "Leola (Sister) Lee",
+    description: "A heartwarming tale of love between crafting tools. Follow Needle and Yarn as they navigate challenges, form deep bonds, and create beautiful projects together.",
+    pages: [
+      {
+        title: "Thank you & Dedication",
+        content: "Thank you for the love, lessons, and laughter that you all have gifted me. With all my love and gratitude,\n\nTo Freddie, Micky, Timothy, Leonard, Jermaine, and Laron: my six remarkable children, each of you a brilliant and unique thread woven into the fabric of our family's story. Freddie, your strength and leadership have always shone bright. Micky, your compassion and empathy are the heart of our home. Timothy, your curiosity and intelligence have no bounds. Leonard, your creativity and artistic spirit bring color to our lives. Jermaine, your resilience and determination inspire us all. Laron, your humor and joy light up every room. \n\nEach of you has brought immeasurable joy, endless inspiration, and a richness to my life that words can barely capture. It's in the laughter we shared, the challenges we overcame, and the endless nights of storytelling where I found the essence of who I am - a mother, a teacher, and a storyteller.\n\nTo the vibrant, resilient community of Milwaukee, Wisconsin: my home. In its bustling streets and quiet neighborhoods, I've found a spirit of perseverance and community that echoes the warmth of the South. Milwaukee, with its diverse tapestry of cultures and stories, has added new chapters to my life, enriching my craft with its unique blend of history, strength, and communal spirit.\n\nThis book is a heartfelt homage to each of you - my beloved children, who have been the pillars of my life, and to Milwaukee, a city that has welcomed me with open arms and enriched my narrative. May these pages reflect my love for crocheting. \nLeola Lee"
+      },
+      {
+        title: "Chapter 1: A Tangled Beginning",
+        content: "In the cozy confines of Leola's sewing basket, where crafting dreams came to life, lived two unlikely friends: a silver needle named Sterling and a ball of soft blue yarn called Azure.\n\nSterling was known for their precision and grace, always standing tall and proud. Azure, on the other hand, was free-spirited and flowing, ready to unravel into any shape or pattern that called to them.\n\n'You know,' Azure said one day, wrapping a gentle loop around Sterling, 'we make quite the team when we work together.'\n\nSterling couldn't help but smile, their metallic surface catching the warm light of the afternoon sun. 'Indeed we do, though I must admit, I was quite nervous about working with you at first.'"
+      },
+      {
+        title: "Chapter 2: Weaving Trust",
+        content: "As days turned into weeks, Sterling and Azure found themselves collaborating on increasingly complex projects. From simple scarves to intricate doilies, each creation strengthened their bond.\n\n'Do you remember our first project together?' Azure chuckled, reminiscing about the slightly crooked potholder they had made.\n\nSterling nodded, their eye gleaming. 'How could I forget? You were so excited, you nearly tangled yourself into knots!'\n\n'But you were patient with me,' Azure replied softly. 'You helped me find my way, stitch by stitch.'"
+      }
+    ]
+  },
+  {
+    id: 'crochet-mastery',
+    title: "Crochet Mastery: A Complete Guide",
+    author: "Leola (Sister) Lee",
+    description: "A comprehensive guide to mastering the art of crochet. From basic stitches to complex techniques, this guide has everything you need to become a crochet master.",
+    pages: [
+      {
+        title: "Introduction",
+        content: "Welcome to the wonderful world of crochet!\n\nIn these pages, you'll discover not just techniques and patterns, but a craft that has brought joy and comfort to generations of creators. Whether you're picking up a hook for the first time or looking to expand your skills, this guide will help you unlock the full potential of your creativity."
+      },
+      {
+        title: "Chapter 1: Getting Started",
+        content: "Your journey begins with selecting the right tools. A good crochet hook is like a trusted friend – it should feel comfortable in your hand and work smoothly with your chosen yarn.\n\nFor beginners, I recommend starting with a medium-sized hook (5.5mm or I-9) and a light-colored, worsted weight yarn. This combination allows you to see your stitches clearly and work at a comfortable tension.\n\nHolding Your Hook:\n1. Pencil Grip: Hold the hook like you would a pencil\n2. Knife Grip: Hold the hook like you would a knife\n\nBoth methods are correct – choose the one that feels most natural to you."
+      },
+      {
+        title: "Chapter 2: Basic Stitches",
+        content: "The Chain Stitch (ch):\nThis is the foundation of most crochet projects. Think of it as creating a string of pearls, each loop connecting to the next.\n\nSingle Crochet (sc):\nThe most basic of all crochet stitches, creating a tight, sturdy fabric. Perfect for small figures and items that need structure.\n\nDouble Crochet (dc):\nA taller stitch that works up quickly and creates a more open, flexible fabric. Ideal for blankets and garments.\n\nPractice Tip: Work these stitches in rows until they become muscle memory. Remember, consistency comes with time and patience."
+      }
+    ]
+  }
+];
 
 const App: React.FC = () => {
   // State management
-const [view, setView] = useState<'library' | 'reader'>('library');
+  const [view, setView<'library' | 'reader'>('library');
   const [selectedBook, setSelectedBook] = useState<BookType | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [showPayment, setShowPayment] = useState(false);
@@ -161,13 +213,13 @@ const [view, setView] = useState<'library' | 'reader'>('library');
   };
 
   // Get current and next page content for animation
-const getCurrentPageContent = (): { title: string, content: string } => {
+  const getCurrentPageContent = (): BookPage => {
     return selectedBook && selectedBook.pages[currentPage] 
       ? selectedBook.pages[currentPage] 
       : { title: '', content: '' };
   };
 
-const getNextPageContent = (): { title: string, content: string } => {
+  const getNextPageContent = (): BookPage => {
     return selectedBook && selectedBook.pages[nextPageNum]
       ? selectedBook.pages[nextPageNum]
       : { title: '', content: '' };
