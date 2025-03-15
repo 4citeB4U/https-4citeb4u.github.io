@@ -24,15 +24,20 @@ This application is built with:
 
 1. Clone the repository
 2. Install dependencies:
-   ```
+
+   ```sh
    npm install
    ```
+
 3. Create a `.env` file with your Stripe publishable key:
-   ```
+
+   ```sh
    VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
    ```
+
 4. Start the development server:
-   ```
+
+   ```sh
    npm run dev
    ```
 
