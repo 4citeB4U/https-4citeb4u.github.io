@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, ChevronLeft, ChevronRight, Gift, Settings, X, Book, List } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './components/ui/card/Card';
 import BookCover from './components/BookCover';
-import LeolaBackground from './components/LeolasBackground';
+import FloatingBackground from './components/FloatingBackground';
 import PaymentOverlay from './components/PaymentOverlay';
 import PageFlipAnimation from './components/PageFlipAnimation';
 import InspiringMessages from './components/InspiringMessages';
@@ -412,7 +412,7 @@ const getNextPageContent = (): { title: string, content: string } => {
   // Main render
   return (
     <div className="relative min-h-screen">
-      <LeolaBackground particleCount={particleCount} />
+      <FloatingBackground particleCount={particleCount} />
       {view === 'library' ? <LibraryView /> : <ReaderView />}
       <PaymentOverlay
         isOpen={showPayment}
