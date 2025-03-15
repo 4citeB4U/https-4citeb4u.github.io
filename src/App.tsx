@@ -6,7 +6,9 @@ import FloatingBackground from './components/FloatingBackground';
 import PaymentOverlay from './components/PaymentOverlay';
 import PageFlipAnimation from './components/PageFlipAnimation';
 import InspiringMessages from './components/InspiringMessages';
-import TopBanner, { ScrollingWords } from './components/TopBanner';
+import TopBanner from './components/TopBanner';
+import { needleAndYarn } from './Books/NeedleAndYarn';
+import { crochetMastery } from './Books/CrochetMastery';
 
 // Define TypeScript interfaces
 interface BookPage {
@@ -23,48 +25,7 @@ interface BookType {
 }
 
 // Book collection data (customize to your liking)
-const books: BookType[] = [
-  {
-    id: 'needle-and-yarn',
-    title: "Needle & Yarn: A Love Stitched in Time",
-    author: "Leola (Sister) Lee",
-    description: "A heartwarming tale of love between crafting tools...",
-    pages: [
-      {
-        title: "Dedication",
-        content: "To all who have ever felt the magic in a simple stitch...\n\n..."
-      },
-      {
-        title: "Chapter 1: A Tangled Beginning",
-        content: "In the cozy confines of Leola's sewing basket..."
-      },
-      {
-        title: "Chapter 2: Weaving Trust",
-        content: "As days turned into weeks, Sterling and Azure..."
-      }
-    ]
-  },
-  {
-    id: 'crochet-mastery',
-    title: "Crochet Mastery: A Complete Guide",
-    author: "Leola (Sister) Lee",
-    description: "A comprehensive guide to mastering the art of crochet...",
-    pages: [
-      {
-        title: "Introduction",
-        content: "Welcome to the wonderful world of crochet!\n\n..."
-      },
-      {
-        title: "Chapter 1: Getting Started",
-        content: "Your journey begins with selecting the right tools...\n\n..."
-      },
-      {
-        title: "Chapter 2: Basic Stitches",
-        content: "The Chain Stitch (ch):\n...\n\n..."
-      }
-    ]
-  }
-];
+const books: BookType[] = [needleAndYarn, crochetMastery];
 
 const App: React.FC = () => {
   // State management
@@ -453,7 +414,7 @@ const App: React.FC = () => {
   // Main render
   return (
     <div className="relative min-h-screen">
-      <FloatingBackground particleCount={particleCount} />
+      <FloatingBackground />
       {view === 'library' ? <LibraryView /> : <ReaderView />}
       <PaymentOverlay
         isOpen={showPayment}
