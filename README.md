@@ -82,3 +82,4 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## Acknowledgments
 
 This project is a heartfelt tribute to Leola "Sista" Lee, whose creativity and passion for storytelling and crochet have inspired many. Her works are a testament to the power of love, family, and community. We extend our deepest gratitude to her family and friends for their unwavering support and encouragement. This digital library is a celebration of Leola's legacy and the joy she brings to the world through her art.
+# LeolasBooks
