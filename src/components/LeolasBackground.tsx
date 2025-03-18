@@ -107,3 +107,4 @@ const LeolasBackground: React.FC<LeolasBackgroundProps> = ({ particleCount }) =>
 };
 
 export default LeolasBackground;
+

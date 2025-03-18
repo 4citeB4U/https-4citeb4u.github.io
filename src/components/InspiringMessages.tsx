@@ -41,3 +41,4 @@ const InspiringMessages: React.FC = () => {
 };
 
 export default InspiringMessages;
+
